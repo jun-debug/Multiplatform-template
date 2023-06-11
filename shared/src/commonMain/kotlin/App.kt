@@ -55,7 +55,11 @@ import ui.theme.AppTheme
 import ui.theme.md_theme_light_background
 import ui.theme.md_theme_light_onSecondary
 
-
+/****************************************************
+ * Entry point of the app
+ * it shows login form when start
+ * show welcome form after successfully login
+ ***************************************************/
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
@@ -65,7 +69,14 @@ fun App() {
         Scaffold(
             topBar = {
                 TopAppBar (modifier = Modifier.fillMaxWidth(), backgroundColor = Color.Blue, contentColor = Color.White) {
+                    /********************************************
+                        binding the text with var hello
+                     *******************************************/
                     Text(text = "$hello", modifier = Modifier.fillMaxWidth().weight(1f), textAlign = TextAlign.Center)
+
+                    /********************************************
+                        when click this button, it will change the title back and forth
+                     *******************************************/
                     IconButton(
                         onClick = {
                             if (hello == "Assignment")
@@ -85,12 +96,19 @@ fun App() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                /**************************************************************
+                    when it is not login, it is going to show the login form
+                 ************************************************************/
                 AnimatedVisibility(!isLogin) {
                     LoginForm(onLoginClicked = {
                         isLogin = true
-
                     })
                 }
+
+                /*******************************************************
+                    it will show welcome form after login successfully
+                 *****************************************************/
+
                 AnimatedVisibility(isLogin) {
                     Welcome()
                 }
@@ -99,10 +117,18 @@ fun App() {
     }
 }
 
+/*****************************************************************
+    the composable function will be call after login
+    it shows welcome message and an image. if you like it, click the button
+ ******************************************************************/
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun Welcome(){
+    /*
+        the count variable records how many people like
+     */
     var count by remember { mutableStateOf(0) }
+
     Column (Modifier.fillMaxSize().padding(bottom = 60.dp))
     {
         Card(
@@ -112,6 +138,9 @@ fun Welcome(){
                horizontalAlignment = Alignment.CenterHorizontally,
                verticalArrangement = Arrangement.Center
             ) {
+                /*****************************
+                    welcome message
+                 *****************************/
                 Text(
                     text = "Welcome to my App",
                     style = MaterialTheme.typography.h4,
@@ -119,6 +148,11 @@ fun Welcome(){
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+
+                /*
+                    show image
+                    for now, it is hardcoded for demo
+                 */
                 Image(
                     painterResource("worker.png"),
                     contentDescription = "person image",
@@ -128,7 +162,14 @@ fun Welcome(){
                 Row (verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     Text(text = "people like: $count", textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.width(10.dp))
+
+                    /*********************************
+                        for people who like the image
+                     *********************************/
                     IconButton(
+                        /***************************************************
+                            count will be added up, when clicking the button
+                         ***************************************************/
                         onClick = {
                             count ++;
                         },
@@ -141,6 +182,9 @@ fun Welcome(){
     }
 }
 
+/*********************************************************************
+ * this loginForm to check if user enters correct login information
+ ********************************************************************/
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoginForm(onLoginClicked: () -> Unit) {
@@ -154,6 +198,10 @@ fun LoginForm(onLoginClicked: () -> Unit) {
     ) {
         Text("Login", color = Color.Blue, fontSize = 48.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(80.dp))
+
+        /******************************************
+            this text field is binded to username
+         *****************************************/
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
@@ -162,6 +210,11 @@ fun LoginForm(onLoginClicked: () -> Unit) {
             leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) }
         )
         Spacer(modifier = Modifier.height(20.dp))
+
+        /*********************************
+            this text field is binded to password
+         *********************************/
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -173,6 +226,9 @@ fun LoginForm(onLoginClicked: () -> Unit) {
         Spacer(modifier = Modifier.height(40.dp))
         Button(
             onClick = {
+                /********************************
+                 * check is login information is correct
+                 ******************************/
                 if (login(username, password)) {
                     errorMsg = ""
                     onLoginClicked()
@@ -189,11 +245,18 @@ fun LoginForm(onLoginClicked: () -> Unit) {
             }
         }
         Spacer(modifier = Modifier.height(40.dp))
+        /*
+            this text is binded to errorMsg, to prompt wrong username or password
+         */
         Text("$errorMsg", color = Color.Red)
 
     }
 }
 
+/*******************************************************************************
+    login validation function
+    for now, it is hardcoded for demo, username == "jun" && password == "1234"
+ ******************************************************************************/
 fun login(username : String, password: String) : Boolean{
     return username == "jun" && password == "1234"
 }
